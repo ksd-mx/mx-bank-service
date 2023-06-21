@@ -18,7 +18,7 @@ resource "aws_iam_role" "rds" {
 }
 
 resource "aws_iam_role_policy_attachment" "rds" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonrdsClusterPolicy"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
   role       = aws_iam_role.rds.name
 }
 

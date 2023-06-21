@@ -44,10 +44,8 @@ variable "master_password" {
   type        = string
 }
 
-variable "node_iam_policies" {
+variable "rds_iam_policies" {
   description = "List of IAM policies to attach to the node role."
-  type        = map(any)
-  default = {
-    1 = "arn:aws:iam::aws:policy/"
-  }
+  type        = list(string)
+  default     = null
 }

@@ -37,5 +37,5 @@ variable "node_groups" {
 variable "enable_irsa" {
   description = "Determines whether to create an OpenID Connect provider for the cluster to enable IRSA."
   type        = bool
-  default     = false
+  default     = true
 }
