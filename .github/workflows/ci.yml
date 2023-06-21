@@ -1,0 +1,75 @@
+name: CI/CD pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
+        ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPOSITORY }}
+        IMAGE_TAG: ${{ env.IMAGE_TAG }} 
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+  deploy-to-aws:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Install Terragrunt
+      run: |
+        TERRAGRUNT_VERSION=$(curl -s https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest | jq -r .tag_name)
+        wget https://github.com/gruntwork-io/terragrunt/releases/download/$TERRAGRUNT_VERSION/terragrunt_linux_amd64
+        chmod +x terragrunt_linux_amd64
+        sudo mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
+
+    - name: Apply Terraform scripts
+      run: |
+        cd deploy/tf/envs/dev
+        terragrunt apply --auto-approve
+        echo "::set-output name=cluster_name::$(terragrunt output eks_name)"
+
+    - name: Install and configure AWS CLI
+      uses: chrislennon/action-aws-cli@v1.1
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ steps.terraform.outputs.cluster_name }}
+
+    - name: Get kubeconfig from EKS cluster
+      run: |
+        aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name ${{ steps.terraform.outputs.cluster_name }} --kubeconfig ${{ env.KUBECONFIG_PATH }}
+
+    - name: Upload kubeconfig
+      uses: actions/upload-artifact@v2
+      with:
+        name: kubeconfig
+        path: ${{ env.KUBECONFIG_PATH }}

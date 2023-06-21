@@ -1,0 +1,20 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: mx-bank-service
+build:
+  artifacts:
+    - image: busybox
+      docker:
+        dockerfile: Dockerfile.dev
+    - image: nginx
+      buildpacks:
+        builder: gcr.io/buildpacks/builder:v1
+deploy:
+  helm:
+    releases:
+      - name: hello-world-chart
+        chartPath: deploy/helm
+        valuesFiles:
+          - deploy/helm/values.yaml
+        version: 0.1.0
