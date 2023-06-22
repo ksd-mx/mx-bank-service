@@ -3,18 +3,36 @@ kind: Config
 metadata:
   name: mx-bank-service
 build:
+  local:
+    push: false
   artifacts:
-    - image: busybox
+    - image: ksd-mx/mx-bank-service
       docker:
-        dockerfile: Dockerfile.dev
-    - image: nginx
-      buildpacks:
-        builder: gcr.io/buildpacks/builder:v1
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.*"
+            dest: .
 deploy:
-  helm:
-    releases:
-      - name: hello-world-chart
-        chartPath: deploy/helm
-        valuesFiles:
-          - deploy/helm/values.yaml
-        version: 0.1.0
+  kubectl: { 
+    defaultNamespace: mx-bank-service 
+    }
+
+manifests:
+  rawYaml:
+    - './deploy/k8s/templates/namespace.yml'
+    - './deploy/k8s/templates/app/deployment.yml'
+    - './deploy/k8s/templates/app/service.yml'
+    - './deploy/k8s/templates/app/configmap.yml'
+    - './deploy/k8s/templates/app/ingress.yml'
+
+# deploy:
+#   helm:
+#     releases:
+#       - name: mx-bank-service
+#         chartPath: deploy/k8s
+#         valuesFiles:
+#           - deploy/k8s/values.yaml
+#         setValues:
+#           app.image: ksd-mx/mx-bank-service
+#         namespace: mx-bank-service

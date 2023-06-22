@@ -1,0 +1,24 @@
+{
+    "registryId": "324654522070",
+    "replicationConfiguration": {
+        "rules": []
+    }
+},
+{
+    "repositories": [
+        {
+            "repositoryArn": "arn:aws:ecr:us-east-1:324654522070:repository/dev-mx-bank-service-repository",
+            "registryId": "324654522070",
+            "repositoryName": "dev-mx-bank-service-repository",
+            "repositoryUri": "324654522070.dkr.ecr.us-east-1.amazonaws.com/dev-mx-bank-service-repository",
+            "createdAt": "2023-06-22T20:41:53+04:00",
+            "imageTagMutability": "MUTABLE",
+            "imageScanningConfiguration": {
+                "scanOnPush": false
+            },
+            "encryptionConfiguration": {
+                "encryptionType": "AES256"
+            }
+        }
+    ]
+}

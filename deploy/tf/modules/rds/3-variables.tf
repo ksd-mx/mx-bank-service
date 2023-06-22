@@ -38,7 +38,6 @@ variable "master_username" {
   type        = string
 }
 
-
 variable "master_password" {
   description = "Password for the master DB user."
   type        = string
@@ -48,4 +47,16 @@ variable "rds_iam_policies" {
   description = "List of IAM policies to attach to the node role."
   type        = list(string)
   default     = null
+}
+
+variable "security_group_rules" {
+  description = "Map of security group rules to add to the cluster security group created"
+  type        = any
+  default     = {}
+}
+
+variable "serverlessv2_scaling_configuration" {
+  description = "Map of nested attributes with serverless v2 scaling properties. Only valid when `engine_mode` is set to `provisioned`"
+  type        = map(string)
+  default     = {}
 }

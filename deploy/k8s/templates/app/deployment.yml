@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world
+  labels:
+    app: hello-world
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hello-world
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      containers:
+      - name: hello-world
+        image: ksd-mx/mx-bank-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 9000
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: hello-world-config
+              key: DB_HOST
+        # - name: DB_USER
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: postgres-secret
+        #       key: username
+        # - name: DB_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: postgres-secret
+        #       key: password
