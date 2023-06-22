@@ -34,3 +34,6 @@ Created the following IAM artifacts:
 
 Activated the Terraform backend storage in S3
 * using terraform-deployment-role (assume-role in profile)
+
+CI/CD pipeline configuration
+* deployment
