@@ -9,6 +9,7 @@ on:
 jobs:
   deploy-to-aws:
     runs-on: ubuntu-latest
+    environment: DEV
 
     steps:
     - name: Checkout code
@@ -52,6 +53,7 @@ jobs:
   build-and-push:
     needs: deploy-to-aws
     runs-on: ubuntu-latest
+    environment: DEV
 
     steps:
     - name: Checkout repository
@@ -74,6 +76,7 @@ jobs:
   deploy-to-eks:
     needs: build-and-push
     runs-on: ubuntu-latest
+    environment: DEV
 
     steps:
     - name: Download kubeconfig
