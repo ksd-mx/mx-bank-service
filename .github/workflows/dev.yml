@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 env:
-  AWS_REGION: ${{ env.AWS_REGION }}
+  AWS_REGION: us-east-1
 
 jobs:
   deploy-to-aws:
