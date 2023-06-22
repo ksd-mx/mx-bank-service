@@ -4,6 +4,9 @@ on:
   push:
     branches: [ main ]
 
+env:
+  AWS_REGION: ${{ env.AWS_REGION }}
+
 jobs:
   deploy-to-aws:
     runs-on: ubuntu-latest
@@ -18,7 +21,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ vars.AWS_REGION }}
+        aws-region: $AWS_REGION
 
     - name: Install Terragrunt
       run: |
@@ -40,7 +43,7 @@ jobs:
 
     - name: Get kubeconfig from EKS cluster
       run: |
-        aws eks --region ${{ vars.AWS_REGION }} update-kubeconfig --name $(terragrunt output eks_name) --kubeconfig ~/.kube/config
+        aws eks --region $AWS_REGION update-kubeconfig --name $(terragrunt output eks_name) --kubeconfig ~/.kube/config
 
     - name: Upload kubeconfig
       uses: actions/upload-artifact@v2
