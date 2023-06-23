@@ -45,8 +45,8 @@ jobs:
         eks_name=$(echo "$outputs" | jq -r '.eks_name.value // empty')
         echo "::set-output name=ecr_repository::$ecr_repository"
         echo "::set-output name=eks_name::$eks_name"
-        echo ecr_repository
-        echo eks_name
+        echo $ecr_repository
+        echo $eks_name
 
     - name: Install and configure AWS CLI
       run: |
