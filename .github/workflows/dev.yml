@@ -40,6 +40,7 @@ jobs:
         cd deploy/tf/envs/$(echo $ENVIRONMENT | tr '[:upper:]' '[:lower:]')
         terragrunt run-all apply  --terragrunt-non-interactive
         echo "::set-output name=ecr_repository::$(terragrunt output ecr_repository)"
+        echo "::set-output name=eks_name::$(terragrunt output eks_name)"
 
     - name: Install and configure AWS CLI
       run: |
@@ -49,7 +50,7 @@ jobs:
 
     - name: Get kubeconfig from EKS cluster
       run: |
-        aws eks --region $AWS_REGION update-kubeconfig --name $(terragrunt output eks_name) --kubeconfig ~/.kube/config
+        aws eks --region $AWS_REGION update-kubeconfig --name ${{ needs.deploy-to-aws.outputs.eks_name }} --kubeconfig ~/.kube/config
 
     - name: Upload kubeconfig
       uses: actions/upload-artifact@v2
@@ -83,7 +84,6 @@ jobs:
       env:
         IMAGE_TAG: ${{ github.sha }} 
       run: |
-        ECR_REGISTRY=${{ needs.deploy-to-aws.outputs.ecr_registry }}
         ECR_REPOSITORY=${{ needs.deploy-to-aws.outputs.ecr_repository }}
         docker build -t $ECR_REPOSITORY:latest .
         docker tag $ECR_REPOSITORY:latest $ECR_REPOSITORY:$IMAGE_TAG
@@ -111,5 +111,5 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl config use-context ${{ needs.deploy-to-aws.outputs.eks_cluster_name }}
+        kubectl config use-context ${{ needs.deploy-to-aws.outputs.eks_name }}
         kubectl set image deployment/my-app-deployment my-app-container=${{ needs.build-and-push.outputs.image }}
