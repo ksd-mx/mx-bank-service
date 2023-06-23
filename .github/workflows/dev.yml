@@ -42,7 +42,10 @@ jobs:
         echo "::set-output name=ecr_repository::$(terragrunt output ecr_repository)"
 
     - name: Install and configure AWS CLI
-      uses: chrislennon/action-aws-cli@v1.1
+      run: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
 
     - name: Get kubeconfig from EKS cluster
       run: |
