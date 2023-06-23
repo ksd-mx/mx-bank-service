@@ -7,10 +7,12 @@ import (
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Hello, World!"))
+
+	// TODO: to be removed
 	log.Println("DB_HOST: ", os.Getenv("DB_HOST"))
 	log.Println("DB_USER: ", os.Getenv("DB_USER"))
 	log.Println("DB_PASSWORD: ", os.Getenv("DB_PASSWORD"))
-	w.Write([]byte("Hello, World!"))
 }
 
 func main() {
