@@ -38,7 +38,7 @@ jobs:
       id: terragrunt
       run: |
         cd deploy/tf/envs/$(echo $ENVIRONMENT | tr '[:upper:]' '[:lower:]')
-        terragrunt run-all apply --auto-approve
+        terragrunt run-all apply  --terragrunt-non-interactive
         echo "::set-output name=ecr_repository::$(terragrunt output ecr_repository)"
 
     - name: Install and configure AWS CLI
