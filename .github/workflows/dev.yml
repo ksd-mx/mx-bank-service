@@ -42,7 +42,7 @@ jobs:
         echo "::set-output name=ecr_repository::$(terragrunt output ecr_repository)"
 
     - name: Install and configure AWS CLI
-      uses: chrislennon/action-aws-cli@v1.1
+      uses: chrislennon/action-aws-cli@v2
 
     - name: Get kubeconfig from EKS cluster
       run: |
@@ -60,8 +60,17 @@ jobs:
     environment: DEV
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ secrets.ROLE }}
+        role-session-name: terraform-github
+        role-duration-seconds: 1200
 
     - name: Login to Amazon ECR
       id: login-ecr
