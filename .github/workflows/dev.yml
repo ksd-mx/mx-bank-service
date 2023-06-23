@@ -6,7 +6,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ROLE: arn:aws:iam::324654522070:role/terraform-deployment-role
+  # ROLE: arn:aws:iam::324654522070:role/terraform-deployment-role
 
 
 jobs:
