@@ -6,6 +6,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
+  ROLE: arn:aws:iam::324654522070:role/terraform-deployment-role
 
 jobs:
   deploy-to-aws:
@@ -22,7 +23,7 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
-        role-to-assume: ${{ secrets.ROLE }}
+        role-to-assume: ${{ env.ROLE }}
 
     - name: Install Terragrunt
       run: |
