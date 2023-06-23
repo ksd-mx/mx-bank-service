@@ -3,9 +3,11 @@ kind: Service
 metadata:
   name: hello-world-service
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
-    - port: 9000
+    - protocol: TCP
+      port: 9000
       targetPort: 9000
+      nodePort: 31000
   selector:
     app: hello-world

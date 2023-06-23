@@ -4,9 +4,9 @@ metadata:
   name: mx-bank-service
 build:
   local:
-    push: false
+    push: true
   artifacts:
-    - image: ksd-mx/mx-bank-service
+    - image: 324654522070.dkr.ecr.us-east-1.amazonaws.com/dev-mx-bank-service-repository
       docker:
         dockerfile: Dockerfile
       sync:
@@ -21,18 +21,8 @@ deploy:
 manifests:
   rawYaml:
     - './deploy/k8s/templates/namespace.yml'
-    - './deploy/k8s/templates/app/deployment.yml'
-    - './deploy/k8s/templates/app/service.yml'
     - './deploy/k8s/templates/app/configmap.yml'
+    - './deploy/k8s/templates/app/service.yml'
     - './deploy/k8s/templates/app/ingress.yml'
-
-# deploy:
-#   helm:
-#     releases:
-#       - name: mx-bank-service
-#         chartPath: deploy/k8s
-#         valuesFiles:
-#           - deploy/k8s/values.yaml
-#         setValues:
-#           app.image: ksd-mx/mx-bank-service
-#         namespace: mx-bank-service
+    - './deploy/k8s/templates/app/secret.yml'
+    - './deploy/k8s/templates/app/deployment.yml'

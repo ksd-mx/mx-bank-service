@@ -10,7 +10,7 @@ A simple service in Golang with its CI and Kubernetes deployment manifests.
 
 [x] The artifacts must be built in an automated way in a CI environment.
 
-[] The service can be deployed with Helm or plain Kubernetes manifests.
+[x] The service can be deployed with Helm or plain Kubernetes manifests.
 
 [x] Even if not implemented/used in the service, we assume the service will require three environment variables: DB_USER, DB_HOST, and DB_PASSWORD.
 

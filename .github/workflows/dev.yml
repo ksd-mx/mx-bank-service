@@ -35,7 +35,6 @@ jobs:
       run: |
         cd deploy/tf/envs/$(echo $ENVIRONMENT | tr '[:upper:]' '[:lower:]')
         terragrunt apply --auto-approve
-        echo "::set-output name=ecr_registry::$(terragrunt output ecr_registry)"
         echo "::set-output name=ecr_repository::$(terragrunt output ecr_repository)"
 
     - name: Install and configure AWS CLI
@@ -70,9 +69,11 @@ jobs:
       run: |
         ECR_REGISTRY=${{ needs.deploy-to-aws.outputs.ecr_registry }}
         ECR_REPOSITORY=${{ needs.deploy-to-aws.outputs.ecr_repository }}
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        docker build -t $ECR_REPOSITORY:latest .
+        docker tag $ECR_REPOSITORY:latest $ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REPOSITORY:latest
+        docker push $ECR_REPOSITORY:$IMAGE_TAG
+        echo "::set-output name=image::$ECR_REPOSITORY:$IMAGE_TAG"
 
   deploy-to-eks:
     needs: build-and-push
@@ -94,5 +95,5 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl config use-context my-eks-cluster
+        kubectl config use-context ${{ needs.deploy-to-aws.outputs.eks_cluster_name }}
         kubectl set image deployment/my-app-deployment my-app-container=${{ needs.build-and-push.outputs.image }}
