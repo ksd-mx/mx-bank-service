@@ -36,7 +36,7 @@ jobs:
 
     - name: Apply Terraform scripts
       id: terragrunt
-      working-directory: ./deploy/tf/envs/$(echo $ENVIRONMENT | tr '[:upper:]' '[:lower:]')
+      working-directory: ./deploy/tf/envs/dev
       run: |
         terragrunt run-all apply  --terragrunt-non-interactive
         echo "::set-output name=ecr_repository::$(terragrunt output ecr_repository)"
