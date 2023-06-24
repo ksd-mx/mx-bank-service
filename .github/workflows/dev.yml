@@ -100,6 +100,7 @@ jobs:
         echo "::set-output name=IMAGE::$ECR_REPOSITORY:$IMAGE_TAG"
 
     outputs:
+      EKS_NAME: ${{ needs.deploy-to-aws.outputs.EKS_NAME }}
       IMAGE: ${{ steps.build-and-push.outputs.IMAGE }}
 
   deploy-to-eks:
@@ -122,6 +123,6 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl config use-context ${{ needs.deploy-to-aws.outputs.EKS_NAME }}
+        kubectl config use-context ${{ needs.build-and-push.outputs.EKS_NAME }}
         kubectl apply -f deploy/k8s/templates/app/
         kubectl set image hello-world hello-world=${{ needs.build-and-push.outputs.IMAGE }}
