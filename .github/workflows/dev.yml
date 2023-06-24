@@ -114,4 +114,5 @@ jobs:
     - name: Deploy to Kubernetes
       run: |
         kubectl config use-context ${{ needs.deploy-to-aws.outputs.EKS_NAME }}
-        kubectl set image hello-world mx-bank-service=${{ needs.build-and-push.outputs.image }}
+        kubectl apply -f deploy/k8s/templates/app/
+        kubectl set image hello-world hello-world=${{ needs.build-and-push.outputs.image }}
