@@ -113,8 +113,6 @@ jobs:
     environment: DEV
 
     steps:
-
-    steps:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
