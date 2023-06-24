@@ -96,7 +96,10 @@ jobs:
         docker tag $ECR_REPOSITORY:latest $ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REPOSITORY:latest
         docker push $ECR_REPOSITORY:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REPOSITORY:$IMAGE_TAG"
+        echo "::set-output name=IMAGE::$ECR_REPOSITORY:$IMAGE_TAG"
+
+    outputs:
+      image: ${{ steps.build-and-push.outputs.IMAGE }}
 
   deploy-to-eks:
     needs: build-and-push
@@ -120,4 +123,4 @@ jobs:
       run: |
         kubectl config use-context ${{ needs.deploy-to-aws.outputs.EKS_NAME }}
         kubectl apply -f deploy/k8s/templates/app/
-        kubectl set image hello-world hello-world=${{ needs.build-and-push.outputs.image }}
+        kubectl set image hello-world hello-world=${{ needs.build-and-push.outputs.IMAGE }}
