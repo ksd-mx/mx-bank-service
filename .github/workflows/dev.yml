@@ -60,6 +60,9 @@ jobs:
         name: kubeconfig
         path: ~/.kube/config
 
+    outputs:
+      ECR_REPOSITORY: ${{ steps.terragrunt.outputs.ECR_REPOSITORY }}
+
   build-and-push:
     needs: deploy-to-aws
     runs-on: ubuntu-latest
