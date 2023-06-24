@@ -38,6 +38,7 @@ jobs:
         outputs=$(terragrunt run-all output -json 2>/dev/null | tr -d '\n')
         ECR_REPOSITORY=$(echo "$outputs" | jq -r '.repository_url.value // empty') 
         EKS_CLUSTER_NAME=$(echo "$outputs" | jq -r '.eks_cluster_name.value // empty')
+        EKS_CLUSTER_ARN=$(echo "$outputs" | jq -r '.eks_cluster_arn.value // empty')
         echo "ECR_REPOSITORY=${ECR_REPOSITORY}" >> $GITHUB_OUTPUT
         echo "EKS_CLUSTER_NAME=${EKS_CLUSTER_NAME}" >> $GITHUB_OUTPUT
         echo "::set-output name=ECR_REPOSITORY::$ECR_REPOSITORY"
