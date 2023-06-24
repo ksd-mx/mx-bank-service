@@ -37,11 +37,12 @@ jobs:
         terragrunt run-all apply  --terragrunt-non-interactive
         outputs=$(terragrunt run-all output -json 2>/dev/null | tr -d '\n')
         ECR_REPOSITORY=$(echo "$outputs" | jq -r '.repository_url.value // empty') 
-        EKS_NAME=$(echo "$outputs" | jq -r '.eks_name.value // empty')
+        EKS_CLUSTER_NAME=$(echo "$outputs" | jq -r '.eks_cluster_name.value // empty')
         echo "ECR_REPOSITORY=${ECR_REPOSITORY}" >> $GITHUB_OUTPUT
-        echo "EKS_NAME=${EKS_NAME}" >> $GITHUB_OUTPUT
+        echo "EKS_CLUSTER_NAME=${EKS_CLUSTER_NAME}" >> $GITHUB_OUTPUT
         echo "::set-output name=ECR_REPOSITORY::$ECR_REPOSITORY"
-        echo "::set-output name=EKS_NAME::$EKS_NAME"
+        echo "::set-output name=EKS_CLUSTER_NAME::$EKS_CLUSTER_NAME"
+        echo "::set-output name=EKS_CLUSTER_ARN::$EKS_CLUSTER_ARN"
 
     - name: Install and configure AWS CLI
       run: |
@@ -51,8 +52,8 @@ jobs:
 
     - name: Get kubeconfig from EKS cluster
       run: |
-        EKS_NAME=${{ steps.terragrunt.outputs.EKS_NAME }}
-        aws eks update-kubeconfig --region $AWS_REGION --name $EKS_NAME --kubeconfig ~/.kube/config
+        EKS_CLUSTER_NAME=${{ steps.terragrunt.outputs.EKS_CLUSTER_NAME }}
+        aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME --kubeconfig ~/.kube/config
 
     - name: Upload kubeconfig
       uses: actions/upload-artifact@v2
@@ -61,7 +62,8 @@ jobs:
         path: ~/.kube/config
 
     outputs:
-      EKS_NAME: ${{ steps.terragrunt.outputs.EKS_NAME }}
+      EKS_CLUSTER_ARN: ${{ steps.terragrunt.outputs.EKS_CLUSTER_ARN }}
+      EKS_CLUSTER_NAME: ${{ steps.terragrunt.outputs.EKS_CLUSTER_NAME }}
       ECR_REPOSITORY: ${{ steps.terragrunt.outputs.ECR_REPOSITORY }}
 
   build-and-push:
@@ -100,7 +102,8 @@ jobs:
         echo "::set-output name=IMAGE::$ECR_REPOSITORY:$IMAGE_TAG"
 
     outputs:
-      EKS_NAME: ${{ needs.deploy-to-aws.outputs.EKS_NAME }}
+      EKS_CLUSTER_ARN: ${{ needs.deploy-to-aws.outputs.EKS_CLUSTER_ARN }}
+      EKS_CLUSTER_NAME: ${{ needs.deploy-to-aws.outputs.EKS_CLUSTER_NAME }}
       IMAGE: ${{ steps.build-and-push.outputs.IMAGE }}
 
   deploy-to-eks:
@@ -123,6 +126,6 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl config use-context ${{ needs.build-and-push.outputs.EKS_NAME }}
+        kubectl config use-context ${{ needs.build-and-push.outputs.EKS_CLUSTER_ARN }}
         kubectl apply -f deploy/k8s/templates/app/
         kubectl set image hello-world hello-world=${{ needs.build-and-push.outputs.IMAGE }}

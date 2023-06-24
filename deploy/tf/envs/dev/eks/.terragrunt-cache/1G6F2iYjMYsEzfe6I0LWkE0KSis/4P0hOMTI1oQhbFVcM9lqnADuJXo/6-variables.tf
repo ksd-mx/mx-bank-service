@@ -8,7 +8,7 @@ variable "eks_version" {
   type        = string
 }
 
-variable "eks_name" {
+variable "eks_cluster_name" {
   description = "Name of the EKS cluster."
   type        = string
 }

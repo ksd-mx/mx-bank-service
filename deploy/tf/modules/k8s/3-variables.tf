@@ -3,7 +3,7 @@ variable "env" {
     type = string
 }
 
-variable "eks_name" {
+variable "eks_cluster_name" {
     description = "Name of the cluster."
     type = string
 }

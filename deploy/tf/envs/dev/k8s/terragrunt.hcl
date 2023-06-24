@@ -14,7 +14,7 @@ include "env" {
 
 inputs = {
   env                             = include.env.locals.env
-  eks_name                        = dependency.eks.outputs.eks_name
+  eks_cluster_name                        = dependency.eks.outputs.eks_cluster_name
   openid_provider_arn             = dependency.eks.outputs.openid_provider_arn
   enable_cluster_autoscaler       = true
   cluster_autoscaler_helm_version = "9.28.0"
@@ -29,10 +29,10 @@ generate "helm_provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
     data "aws_eks_cluster" "eks" {
-        name = var.eks_name
+        name = var.eks_cluster_name
     }
     data "aws_eks_cluster_auth" "eks" {
-        name = var.eks_name
+        name = var.eks_cluster_name
     }
     provider "helm" {
       kubernetes {
