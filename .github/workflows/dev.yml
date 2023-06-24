@@ -99,7 +99,7 @@ jobs:
         echo "::set-output name=IMAGE::$ECR_REPOSITORY:$IMAGE_TAG"
 
     outputs:
-      image: ${{ steps.build-and-push.outputs.IMAGE }}
+      IMAGE: ${{ steps.build-and-push.outputs.IMAGE }}
 
   deploy-to-eks:
     needs: build-and-push
