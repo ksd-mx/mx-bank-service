@@ -37,8 +37,10 @@ jobs:
         outputs=$(terragrunt run-all output -json 2>/dev/null | tr -d '\n')
         ECR_REPOSITORY=$(echo "$outputs" | jq -r '.repository_url.value // empty') 
         EKS_NAME=$(echo "$outputs" | jq -r '.eks_name.value // empty')
-        echo "ECR_REPOSITORY=$ECR_REPOSITORY" >> "$GITHUB_OUTPUT"
-        echo "EKS_NAME=$EKS_NAME" >> "$GITHUB_OUTPUT"
+        echo "ECR_REPOSITORY=${ECR_REPOSITORY}" >> $GITHUB_OUTPUT
+        echo "EKS_NAME=${EKS_NAME}" >> $GITHUB_OUTPUT
+        echo "::set-output name=ECR_REPOSITORY::$ECR_REPOSITORY"
+        echo "::set-output name=EKS_NAME::$EKS_NAME"
 
 
     - name: Install and configure AWS CLI
@@ -49,7 +51,7 @@ jobs:
 
     - name: Get kubeconfig from EKS cluster
       run: |
-        EKS_NAME=${{ needs.deploy-to-aws.outputs.EKS_NAME }}
+        EKS_NAME=${{ steps.terragrunt.outputs.EKS_NAME }}
         ECR_REPOSITORY=${{ needs.deploy-to-aws.outputs.ECR_REPOSITORY }}
         echo $EKS_NAME
         echo $ECR_REPOSITORY
