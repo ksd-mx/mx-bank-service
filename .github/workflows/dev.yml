@@ -62,7 +62,7 @@ jobs:
         path: ~/.kube/config
 
     outputs:
-      ECR_REPOSITORY: ${{ steps.terragrunt.outputs.ECR_REPOSITORY }}
+      ECR_REPOSITORY: teste
 
   build-and-push:
     needs: deploy-to-aws
