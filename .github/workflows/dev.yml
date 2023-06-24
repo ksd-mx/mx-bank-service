@@ -4,11 +4,6 @@ on:
   push:
     branches: [ main ]
 
-env:
-  AWS_REGION: us-east-1
-  # ROLE: arn:aws:iam::324654522070:role/terraform-deployment-role
-
-
 jobs:
   deploy-to-aws:
     runs-on: ubuntu-latest
@@ -22,7 +17,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+        aws-region: ${{ secrets.AWS_REGION }}
         role-to-assume: ${{ secrets.ROLE }}
         role-session-name: terraform-github
         role-duration-seconds: 1200
@@ -41,7 +36,7 @@ jobs:
         terragrunt run-all apply  --terragrunt-non-interactive
         outputs=$(terragrunt run-all output -json 2>/dev/null | tr -d '\n')
         echo "$outputs"
-        ecr_repository=$(echo "$outputs" | jq -r '.ecr_repository.value // empty')
+        ecr_repository=$(echo "$outputs" | jq -r '.repository_url.value // empty')
         eks_name=$(echo "$outputs" | jq -r '.eks_name.value // empty')
         echo "::set-output name=ecr_repository::$repository_url"
         echo "::set-output name=eks_name::$eks_name"
@@ -56,7 +51,7 @@ jobs:
 
     - name: Get kubeconfig from EKS cluster
       run: |
-        eks_name=${{ needs.deploy-to-aws.outputs.eks_name }}
+        eks_name=${{ jobs.deploy-to-aws.terragrunt.eks_name }}
         echo $eks_name
         aws eks update-kubeconfig --region $AWS_REGION --name $eks_name --kubeconfig ~/.kube/config
 
