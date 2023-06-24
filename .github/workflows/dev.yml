@@ -43,7 +43,6 @@ jobs:
         echo "::set-output name=ECR_REPOSITORY::$ECR_REPOSITORY"
         echo "::set-output name=EKS_NAME::$EKS_NAME"
 
-
     - name: Install and configure AWS CLI
       run: |
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -62,6 +61,7 @@ jobs:
         path: ~/.kube/config
 
     outputs:
+      EKS_NAME: ${{ steps.terragrunt.outputs.EKS_NAME }}
       ECR_REPOSITORY: ${{ steps.terragrunt.outputs.ECR_REPOSITORY }}
 
   build-and-push:
