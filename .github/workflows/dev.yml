@@ -62,6 +62,12 @@ jobs:
         name: kubeconfig
         path: ~/.kube/config
 
+    - name: Upload k8s templates
+      uses: actions/upload-artifact@v2
+      with:
+        name: k8s-templates
+        path: deploy/k8s/templates/app/*.yml
+
     outputs:
       EKS_CLUSTER_ARN: ${{ steps.terragrunt.outputs.EKS_CLUSTER_ARN }}
       EKS_CLUSTER_NAME: ${{ steps.terragrunt.outputs.EKS_CLUSTER_NAME }}
@@ -129,6 +135,12 @@ jobs:
       with:
         name: kubeconfig
         path: ~/.kube/
+
+    - name: Download k8s templates
+      uses: actions/download-artifact@v2
+      with:
+        name: k8s-templates
+        path: deploy/k8s/templates/app/
 
     - name: Install Kubectl
       run: |
