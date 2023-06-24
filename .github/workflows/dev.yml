@@ -56,6 +56,8 @@ jobs:
 
     - name: Get kubeconfig from EKS cluster
       run: |
+        eks_name=${{ needs.deploy-to-aws.outputs.eks_name }}
+        echo $eks_name
         aws eks update-kubeconfig --region $AWS_REGION --name $eks_name --kubeconfig ~/.kube/config
 
     - name: Upload kubeconfig
