@@ -52,9 +52,6 @@ jobs:
     - name: Get kubeconfig from EKS cluster
       run: |
         EKS_NAME=${{ steps.terragrunt.outputs.EKS_NAME }}
-        ECR_REPOSITORY=${{ needs.deploy-to-aws.outputs.ECR_REPOSITORY }}
-        echo $EKS_NAME
-        echo $ECR_REPOSITORY
         aws eks update-kubeconfig --region $AWS_REGION --name $EKS_NAME --kubeconfig ~/.kube/config
 
     - name: Upload kubeconfig
@@ -76,7 +73,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+        aws-region: ${{ secrets.AWS_REGION }}
         role-to-assume: ${{ secrets.ROLE }}
         role-session-name: terraform-github
         role-duration-seconds: 1200
@@ -116,5 +113,5 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl config use-context ${{ needs.deploy-to-aws.outputs.eks_name }}
+        kubectl config use-context ${{ needs.deploy-to-aws.outputs.EKS_NAME }}
         kubectl set image hello-world mx-bank-service=${{ needs.build-and-push.outputs.image }}
