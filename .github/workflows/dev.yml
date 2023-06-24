@@ -43,7 +43,7 @@ jobs:
         echo "$outputs"
         ecr_repository=$(echo "$outputs" | jq -r '.ecr_repository.value // empty')
         eks_name=$(echo "$outputs" | jq -r '.eks_name.value // empty')
-        echo "::set-output name=ecr_repository::$ecr_repository"
+        echo "::set-output name=ecr_repository::$repository_url"
         echo "::set-output name=eks_name::$eks_name"
         echo $ecr_repository
         echo $eks_name
@@ -56,7 +56,7 @@ jobs:
 
     - name: Get kubeconfig from EKS cluster
       run: |
-        aws eks --region $AWS_REGION update-kubeconfig --name ${{ needs.deploy-to-aws.outputs.eks_name }} --kubeconfig ~/.kube/config
+        aws eks --region $AWS_REGION update-kubeconfig --name $eks_name --kubeconfig ~/.kube/config
 
     - name: Upload kubeconfig
       uses: actions/upload-artifact@v2
@@ -118,4 +118,4 @@ jobs:
     - name: Deploy to Kubernetes
       run: |
         kubectl config use-context ${{ needs.deploy-to-aws.outputs.eks_name }}
-        kubectl set image deployment/my-app-deployment my-app-container=${{ needs.build-and-push.outputs.image }}
+        kubectl set image hello-world mx-bank-service=${{ needs.build-and-push.outputs.image }}
