@@ -66,7 +66,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: k8s-templates
-        path: deploy/k8s/templates/app/*.yml
+        path: deploy/k8s/templates/
 
     outputs:
       EKS_CLUSTER_ARN: ${{ steps.terragrunt.outputs.EKS_CLUSTER_ARN }}
@@ -140,7 +140,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: k8s-templates
-        path: deploy/k8s/templates/app/
+        path: deploy/k8s/templates/
 
     - name: Install Kubectl
       run: |
