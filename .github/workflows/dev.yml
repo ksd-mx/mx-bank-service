@@ -44,6 +44,7 @@ jobs:
         echo "::set-output name=ECR_REPOSITORY::$ECR_REPOSITORY"
         echo "::set-output name=EKS_CLUSTER_NAME::$EKS_CLUSTER_NAME"
         echo "::set-output name=EKS_CLUSTER_ARN::$EKS_CLUSTER_ARN"
+        echo "::set-output name=DB_ENDPOINT::$aurora_cluster_endpoint"
 
     - name: Install and configure AWS CLI
       run: |
@@ -72,6 +73,7 @@ jobs:
       EKS_CLUSTER_ARN: ${{ steps.terragrunt.outputs.EKS_CLUSTER_ARN }}
       EKS_CLUSTER_NAME: ${{ steps.terragrunt.outputs.EKS_CLUSTER_NAME }}
       ECR_REPOSITORY: ${{ steps.terragrunt.outputs.ECR_REPOSITORY }}
+      DB_ENDPOINT: ${{ steps.terragrunt.outputs.DB_ENDPOINT }}
 
   build-and-push:
     needs: deploy-to-aws
@@ -111,6 +113,7 @@ jobs:
     outputs:
       EKS_CLUSTER_ARN: ${{ needs.deploy-to-aws.outputs.EKS_CLUSTER_ARN }}
       EKS_CLUSTER_NAME: ${{ needs.deploy-to-aws.outputs.EKS_CLUSTER_NAME }}
+      DB_ENDPOINT: ${{ needs.deploy-to-aws.outputs.DB_ENDPOINT }}
       IMAGE: ${{ steps.build-and-push.outputs.IMAGE }}
 
   deploy-to-eks:
@@ -150,9 +153,11 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
+        kubectl create configmap hello-world-config --from-literal=DB_HOST=${{ needs.build-and-push.outputs.DB_ENDPOINT }} --dry-run=client -o yaml | kubectl apply -f -
         kubectl config use-context ${{ needs.build-and-push.outputs.EKS_CLUSTER_ARN }}
         kubectl apply -f deploy/k8s/templates/
         kubectl apply -f deploy/k8s/templates/app
+        kubectl apply -f deploy/k8s/templates/db
         kubectl get all
         kubectl get deployments
         kubectl set image deployment/hello-world hello-world=${{ needs.build-and-push.outputs.IMAGE }}

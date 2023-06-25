@@ -2,6 +2,11 @@
 
 A simple service in Golang with its CI and Kubernetes deployment manifests.
 
+- API gateway
+- Load balancer
+- DB connectivity
+- Frontend Connectivity
+
 ## Requirements
 
 [x] The service must be deployable with a Docker image.
