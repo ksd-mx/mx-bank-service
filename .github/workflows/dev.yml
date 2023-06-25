@@ -152,4 +152,5 @@ jobs:
       run: |
         kubectl config use-context ${{ needs.build-and-push.outputs.EKS_CLUSTER_ARN }}
         kubectl apply -f deploy/k8s/templates/
+        kubectl get deployments -n mx-bank-service
         kubectl set image deployment/hello-world hello-world=${{ needs.build-and-push.outputs.IMAGE }} -n mx-bank-service
