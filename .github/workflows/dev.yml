@@ -154,8 +154,5 @@ jobs:
         kubectl apply -f deploy/k8s/templates/
         kubectl apply -f deploy/k8s/templates/app
         kubectl get all
-        kubectl get all -n mx-bank-service
         kubectl get deployments
-        kubectl get deployments -n mx-bank-service
         kubectl set image deployment/hello-world hello-world=${{ needs.build-and-push.outputs.IMAGE }}
-        kubectl set image deployment/hello-world hello-world=${{ needs.build-and-push.outputs.IMAGE }} -n mx-bank-service
