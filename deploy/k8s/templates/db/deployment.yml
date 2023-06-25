@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: postgresql
+        allow-from: hello-world
     spec:
       containers:
       - name: postgresql
@@ -35,7 +36,14 @@ spec:
         volumeMounts:
         - name: postgresql-storage
           mountPath: /var/lib/postgresql/data
+        - name: db-init-script
+          mountPath: /docker-entrypoint-initdb.d/init.sql
+          subPath: init.sql
       volumes:
       - name: postgresql-storage
-        persistentVolumeClaim:
-          claimName: postgresql-pvc
+        emptyDir: {}
+        # persistentVolumeClaim:
+        #   claimName: postgresql-pvc
+      - name: db-init-script
+        configMap:
+          name: db-init-script

@@ -15,7 +15,7 @@ var db *sql.DB
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	// Query the table for the hello world record
 	var greeting string
-	err := db.QueryRow("SELECT greeting FROM hello_table").Scan(&greeting)
+	err := db.QueryRow("SELECT greeting FROM greetings").Scan(&greeting)
 	if err != nil {
 		log.Println("Failed to execute query: ", err)
 		return
@@ -45,25 +45,16 @@ func readyHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	connStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
-		os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		"helloworld")
 	var err error
 	db, err = sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
-
-	// Create the table if it doesn't exist
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS hello_table (id SERIAL PRIMARY KEY, greeting TEXT)`)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Insert a hello world record
-	_, err = db.Exec(`INSERT INTO hello_table (greeting) VALUES ('Hello, World!') ON CONFLICT (greeting) DO NOTHING`)
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	http.HandleFunc("/", helloHandler)
 	http.HandleFunc("/healthz", healthHandler)

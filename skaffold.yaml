@@ -4,7 +4,7 @@ metadata:
   name: mx-bank-service
 build:
   local:
-    push: true
+    push: false
   artifacts:
     - image: 324654522070.dkr.ecr.us-east-1.amazonaws.com/dev-mx-bank-service-repository
       docker:
@@ -26,3 +26,8 @@ manifests:
     - './deploy/k8s/templates/app/ingress.yml'
     - './deploy/k8s/templates/app/secret.yml'
     - './deploy/k8s/templates/app/deployment.yml'
+    - './deploy/k8s/templates/db/pvc.yml'
+    - './deploy/k8s/templates/db/configmap.yml'
+    - './deploy/k8s/templates/db/network-policy.yml'
+    - './deploy/k8s/templates/db/deployment.yml'
+    - './deploy/k8s/templates/db/service.yml'
