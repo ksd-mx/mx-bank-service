@@ -151,5 +151,5 @@ jobs:
     - name: Deploy to Kubernetes
       run: |
         kubectl config use-context ${{ needs.build-and-push.outputs.EKS_CLUSTER_ARN }}
-        kubectl apply -f deploy/k8s/templates/app/
+        kubectl apply -f deploy/k8s/templates/
         kubectl set image hello-world hello-world=${{ needs.build-and-push.outputs.IMAGE }}
