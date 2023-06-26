@@ -38,8 +38,8 @@ resource "aws_rds_cluster" "this" {
   engine_version          = var.rds_engine_version
   engine_mode             = "provisioned" # serverless v2
   db_subnet_group_name    = aws_db_subnet_group.aurora_subnet_group.name
-  # master_username         = var.master_username
-  # master_password         = var.master_password
+  master_username         = var.master_username
+  master_password         = var.master_password
   skip_final_snapshot     = true
   deletion_protection     = false
   
