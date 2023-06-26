@@ -1,4 +1,4 @@
-data "aws_iam_openid_connect_provider" "this" {
+data "aws_iam_openid_connect_provider" "cluster_autoscaler" {
   arn = var.openid_provider_arn
 }
 
@@ -9,12 +9,12 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
 
     condition {
       test     = "StringEquals"
-      variable = "${replace(data.aws_iam_openid_connect_provider.this.url, "https://", "")}:sub"
+      variable = "${replace(data.aws_iam_openid_connect_provider.cluster_autoscaler.url, "https://", "")}:sub"
       values   = ["system:serviceaccount:kube-system:cluster-autoscaler"]
     }
 
     principals {
-      identifiers = [data.aws_iam_openid_connect_provider.this.arn]
+      identifiers = [data.aws_iam_openid_connect_provider.cluster_autoscaler.arn]
       type        = "Federated"
     }
   }

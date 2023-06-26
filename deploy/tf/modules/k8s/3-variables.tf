@@ -19,6 +19,11 @@ variable "cluster_autoscaler_helm_version" {
     type = string
 }
 
+variable "cluster_loadbalancer_helm_version" {
+    description = "Cluster laodbalancer Helm version."
+    type = string
+}
+
 variable "openid_provider_arn" {
     description = "IAM OpenId Connect Provider ARN."
     type = string

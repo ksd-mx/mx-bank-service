@@ -14,10 +14,11 @@ include "env" {
 
 inputs = {
   env                             = include.env.locals.env
-  eks_cluster_name                        = dependency.eks.outputs.eks_cluster_name
+  eks_cluster_name                = dependency.eks.outputs.eks_cluster_name
   openid_provider_arn             = dependency.eks.outputs.openid_provider_arn
   enable_cluster_autoscaler       = true
   cluster_autoscaler_helm_version = "9.28.0"
+  cluster_loadbalancer_helm_version = "1.4.1"
 }
 
 dependency "eks" {

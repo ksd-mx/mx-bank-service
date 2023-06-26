@@ -1,17 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
   name: ingress
   namespace: mx-bank-service
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
 spec:
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
   - host: localhost 
     http:
       paths:
-      - pathType: Prefix
+      - pathType: Exact
         path: "/"
         backend:
           service:
