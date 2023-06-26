@@ -13,6 +13,11 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "integration_url" {
+  description = "URL of the EKS integration endpoint"
+  type        = string
+}
+
 variable "subnet_ids" {
   description = "List of subnet IDs across a minimum of 2 azs."
   type        = list(string)

@@ -1,7 +1,7 @@
 resource "aws_apigatewayv2_integration" "eks" {
   api_id = aws_apigatewayv2_api.this.id
 
-  integration_uri = ""
+#   integration_uri = var.integration_url
   integration_type = "HTTP_PROXY"
   integration_method = "ANY"
   connection_type = "VPC_LINK"

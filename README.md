@@ -40,3 +40,6 @@ Activated the Terraform backend storage in S3
 
 CI/CD pipeline configuration
 * deployment
+
+
+![alt text](./architecture.png?raw=true)

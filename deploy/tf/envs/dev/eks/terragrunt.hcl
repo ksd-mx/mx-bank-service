@@ -13,7 +13,7 @@ include "env" {
 }
 
 inputs = {
-  eks_version = "1.26"
+  eks_version = "1.27"
   env         = include.env.locals.env
   eks_cluster_name    = "mx-bank"
   subnet_ids  = dependency.vpc.outputs.private_subnet_ids
