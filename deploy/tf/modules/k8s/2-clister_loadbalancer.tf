@@ -22,7 +22,7 @@ data "aws_iam_policy_document" "cluster_loadbalancer" {
 
 resource "aws_iam_role" "cluster_loadbalancer" {
   assume_role_policy = data.aws_iam_policy_document.cluster_loadbalancer.json
-  name               = "${var.eks_cluster_name}-cluster-loadbalancer"
+  name               = "aws-load-balancer-controller"
 }
 
 resource "aws_iam_policy" "cluster_loadbalancer" {
