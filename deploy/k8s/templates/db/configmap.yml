@@ -10,4 +10,4 @@ data:
       id SERIAL PRIMARY KEY,
       greeting VARCHAR(50) NOT NULL
     );
-    INSERT INTO greetings (greeting) VALUES ('Hello World!');
+    INSERT INTO greetings (greeting) VALUES ('Hello World TEST!');

@@ -155,9 +155,9 @@ jobs:
       run: |
         kubectl create configmap hello-world-config --from-literal=DB_HOST=${{ needs.build-and-push.outputs.DB_ENDPOINT }} --dry-run=client -o yaml | kubectl apply -f -
         kubectl config use-context ${{ needs.build-and-push.outputs.EKS_CLUSTER_ARN }}
-        kubectl apply -f deploy/k8s/templates/
-        kubectl apply -f deploy/k8s/templates/app
-        kubectl apply -f deploy/k8s/templates/db
-        kubectl get all
-        kubectl get deployments
-        kubectl set image deployment/hello-world hello-world=${{ needs.build-and-push.outputs.IMAGE }}
+        kubectl apply -f deploy/k8s/templates/namespace.yml
+        kubectl apply -f deploy/k8s/templates/app -n mx-bank-service
+        kubectl apply -f deploy/k8s/templates/db -n mx-bank-service 
+        kubectl get all -n mx-bank-service
+        kubectl get deployments -n mx-bank-service
+        kubectl set image deployment/hello-world hello-world=${{ needs.build-and-push.outputs.IMAGE }} -n mx-bank-service
