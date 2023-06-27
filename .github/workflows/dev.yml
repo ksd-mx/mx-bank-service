@@ -20,7 +20,7 @@ jobs:
         aws-region: ${{ vars.AWS_REGION }}
         role-to-assume: ${{ secrets.ROLE }}
         role-session-name: terraform-github
-        role-duration-seconds: 1200
+        role-duration-seconds: 3600
         mask-aws-account-id: 'no'
 
     - name: Install Terragrunt
@@ -91,7 +91,7 @@ jobs:
         aws-region: ${{ vars.AWS_REGION }}
         role-to-assume: ${{ secrets.ROLE }}
         role-session-name: terraform-github
-        role-duration-seconds: 1200
+        role-duration-seconds: 3600
         mask-aws-account-id: 'no'
 
     - name: Login to Amazon ECR
