@@ -1,5 +1,5 @@
 terraform {
-  source = "../../../modules/rds"
+  source = "tfr:///terraform-aws-modules/rds/aws?version=5.0.0"
 }
 
 include "root" {
@@ -13,6 +13,8 @@ include "env" {
 }
 
 inputs = {
+
+
   env                = include.env.locals.env
   rds_name           = "mx-bank-service"
   rds_engine         = "aurora-postgresql"

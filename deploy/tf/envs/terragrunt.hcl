@@ -1,3 +1,7 @@
+locals {
+  namespace = "mx-bank"
+}
+
 remote_state {
   backend = "s3"
   generate = {
