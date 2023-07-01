@@ -4,3 +4,4 @@ metadata:
   name: mx-bank-service
   labels:
     name: mx-bank-service 
+    istio-injection: enabled

@@ -21,6 +21,7 @@ deploy:
 manifests:
   rawYaml:
     - './deploy/k8s/templates/namespace.yml'
+    - './deploy/k8s/templates/peer-authentication.yml'
     - './deploy/k8s/templates/app/configmap.yml'
     - './deploy/k8s/templates/app/service.yml'
     - './deploy/k8s/templates/app/ingress.yml'

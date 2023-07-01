@@ -151,10 +151,23 @@ jobs:
         chmod +x kubectl
         sudo mv kubectl /usr/local/bin/
 
-    - name: Deploy to Kubernetes
+    - name: Install Istioctl
+      run: |
+        curl -L https://istio.io/downloadIstio | sh -
+        chmod +x istio-*/bin/istioctl
+        sudo mv istio-*/bin/istioctl /usr/local/bin/
+
+    - name: Connect to EKS
       run: |
         kubectl create configmap hello-world-config --from-literal=DB_HOST=${{ needs.build-and-push.outputs.DB_ENDPOINT }} --dry-run=client -o yaml | kubectl apply -f -
         kubectl config use-context ${{ needs.build-and-push.outputs.EKS_CLUSTER_ARN }}
+
+    - name: Connect to EKS
+      run: |    
+        istioctl install -y
+
+    - name: Connect to EKS
+      run: |        
         kubectl apply -f deploy/k8s/templates/namespace.yml
         kubectl apply -f deploy/k8s/templates/app -n mx-bank-service
         kubectl apply -f deploy/k8s/templates/db -n mx-bank-service 
