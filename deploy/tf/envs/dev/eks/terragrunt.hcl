@@ -27,10 +27,10 @@ inputs = {
 
   fargate_profiles = {
     default = {
-      name = "default"
+      name = include.root.locals.namespace
       selectors = [
         {
-          namespace = "default"
+          namespace = include.root.locals.namespace
         }
       ]
     }
