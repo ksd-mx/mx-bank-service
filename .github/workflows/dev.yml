@@ -36,15 +36,13 @@ jobs:
         cd deploy/tf/envs/$(echo $ENVIRONMENT | tr '[:upper:]' '[:lower:]')
         terragrunt run-all apply  --terragrunt-non-interactive
         outputs=$(terragrunt run-all output -json 2>/dev/null | tr -d '\n')
-        ECR_REPOSITORY=$(echo "$outputs" | jq -r '.repository_url.value // empty') 
-        EKS_CLUSTER_NAME=$(echo "$outputs" | jq -r '.eks_cluster_name.value // empty')
-        EKS_CLUSTER_ARN=$(echo "$outputs" | jq -r '.eks_cluster_arn.value // empty')
+        EKS_CLUSTER_NAME=$(echo "$outputs" | jq -r '.cluster_name.value // empty')
+        EKS_CLUSTER_ARN=$(echo "$outputs" | jq -r '.cluster_arn.value // empty')
         echo "ECR_REPOSITORY=${ECR_REPOSITORY}" >> $GITHUB_OUTPUT
         echo "EKS_CLUSTER_NAME=${EKS_CLUSTER_NAME}" >> $GITHUB_OUTPUT
         echo "::set-output name=ECR_REPOSITORY::$ECR_REPOSITORY"
         echo "::set-output name=EKS_CLUSTER_NAME::$EKS_CLUSTER_NAME"
         echo "::set-output name=EKS_CLUSTER_ARN::$EKS_CLUSTER_ARN"
-        echo "::set-output name=DB_ENDPOINT::$aurora_cluster_endpoint"
 
     - name: Install and configure AWS CLI
       run: |
@@ -72,8 +70,6 @@ jobs:
     outputs:
       EKS_CLUSTER_ARN: ${{ steps.terragrunt.outputs.EKS_CLUSTER_ARN }}
       EKS_CLUSTER_NAME: ${{ steps.terragrunt.outputs.EKS_CLUSTER_NAME }}
-      ECR_REPOSITORY: ${{ steps.terragrunt.outputs.ECR_REPOSITORY }}
-      DB_ENDPOINT: ${{ steps.terragrunt.outputs.DB_ENDPOINT }}
 
   build-and-push:
     needs: deploy-to-aws
@@ -103,7 +99,7 @@ jobs:
       env:
         IMAGE_TAG: ${{ github.sha }} 
       run: |
-        ECR_REPOSITORY=${{ needs.deploy-to-aws.outputs.ECR_REPOSITORY }}
+        ECR_REPOSITORY=${{ vars.ECR_REPOSITORY }}
         docker build -t $ECR_REPOSITORY:latest .
         docker tag $ECR_REPOSITORY:latest $ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REPOSITORY:latest
@@ -113,7 +109,6 @@ jobs:
     outputs:
       EKS_CLUSTER_ARN: ${{ needs.deploy-to-aws.outputs.EKS_CLUSTER_ARN }}
       EKS_CLUSTER_NAME: ${{ needs.deploy-to-aws.outputs.EKS_CLUSTER_NAME }}
-      DB_ENDPOINT: ${{ needs.deploy-to-aws.outputs.DB_ENDPOINT }}
       IMAGE: ${{ steps.build-and-push.outputs.IMAGE }}
 
   deploy-to-eks:
@@ -159,7 +154,7 @@ jobs:
 
     - name: Connect to EKS
       run: |
-        kubectl create configmap hello-world-config --from-literal=DB_HOST=${{ needs.build-and-push.outputs.DB_ENDPOINT }} --dry-run=client -o yaml | kubectl apply -f -
+        kubectl create configmap hello-world-config --from-literal=DB_HOST=postgresql --dry-run=client -o yaml | kubectl apply -f -
         kubectl config use-context ${{ needs.build-and-push.outputs.EKS_CLUSTER_ARN }}
 
     - name: Connect to EKS
