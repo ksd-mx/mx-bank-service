@@ -28,7 +28,7 @@ inputs = {
   cluster_encryption_config	= {}
   
   create_kms_key = false
-  cluster_endpoint_public_access = false
+  cluster_endpoint_public_access = true
   create_cloudwatch_log_group	= false
 
   fargate_profiles = {
