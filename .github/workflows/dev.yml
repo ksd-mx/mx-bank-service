@@ -159,7 +159,7 @@ jobs:
 
     - name: Connect to EKS
       run: |    
-        istioctl install -y
+        istioctl install -y 
 
     - name: Connect to EKS
       run: |        
