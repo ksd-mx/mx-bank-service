@@ -19,11 +19,17 @@ locals {
 }
 
 inputs = {
-  cluster_name    = "${local.prefix}-eks-cluster"
+  cluster_name    = "${local.prefix}-eks"
   cluster_version = "1.27"
 
   vpc_id  = dependency.vpc.outputs.vpc_id
   subnet_ids = dependency.vpc.outputs.private_subnets
+  
+  cluster_encryption_config	= {}
+  
+  create_kms_key = false
+  cluster_endpoint_public_access = false
+  create_cloudwatch_log_group	= false
 
   fargate_profiles = {
     default = {
@@ -47,9 +53,6 @@ inputs = {
   #     }
   #   }
   # }
-
-  # aws-auth configmap
-  # manage_aws_auth_configmap = true
 }
 
 dependency "vpc" {
