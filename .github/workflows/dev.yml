@@ -34,7 +34,7 @@ jobs:
       id: terragrunt
       run: |
         cd deploy/tf/$(echo $ENVIRONMENT | tr '[:upper:]' '[:lower:]')
-        terragrunt run-all destroy --terragrunt-non-interactive
+        terragrunt run-all apply --terragrunt-non-interactive
         outputs=$(terragrunt run-all output -json 2>/dev/null | tr -d '\n')
         EKS_CLUSTER_NAME=$(echo "$outputs" | jq -r '.cluster_name.value // empty')
         EKS_CLUSTER_ARN=$(echo "$outputs" | jq -r '.cluster_arn.value // empty')
