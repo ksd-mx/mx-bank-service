@@ -24,12 +24,10 @@ generate "provider" {
 
   contents = <<EOF
     provider "aws" {
-        profile = "terraform"
-        # region = "us-east-1"
-        # assume_role {
-        #   role_arn = "arn:aws:iam::324654522070:role/terraform-deployment-role"
-        #   duration = 10h
-        # }
+        region = "us-east-1"
+        assume_role {
+          role_arn = "arn:aws:iam::324654522070:role/terraform-deployment-role"
+        }
     }
     EOF
 }
