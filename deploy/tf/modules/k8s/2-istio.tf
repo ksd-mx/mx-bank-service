@@ -19,11 +19,11 @@ resource "helm_release" "istiod" {
   depends_on  = [helm_release.istio-base]
 }
 
-resource "helm_release" "istio-ingress" {
-  repository = local.istio_charts_url
-  chart      = "gateway"
-  name       = "istio-ingress"
-  create_namespace = true
-  namespace  = var.istio-namespace
-  depends_on = [helm_release.istiod]
-}
+# resource "helm_release" "istio-ingress" {
+#   repository = local.istio_charts_url
+#   chart      = "gateway"
+#   name       = "istio-ingress"
+#   create_namespace = true
+#   namespace  = var.istio-namespace
+#   depends_on = [helm_release.istiod]
+# }

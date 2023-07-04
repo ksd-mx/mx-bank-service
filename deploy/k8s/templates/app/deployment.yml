@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hello-world
-        image: 324654522070.dkr.ecr.us-east-1.amazonaws.com/dev-mx-bank-service-repository:latest
+        image: 324654522070.dkr.ecr.us-east-1.amazonaws.com/dev-mx-bank-repository:latest
         ports:
         - name: http
           containerPort: 9000

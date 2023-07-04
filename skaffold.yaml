@@ -4,41 +4,23 @@ metadata:
   name: mx-bank-service
 build:
   local:
-    push: false
+    push: true
   artifacts:
-    - image: 324654522070.dkr.ecr.us-east-1.amazonaws.com/dev-mx-bank-service-repository
+    - image: "{{.IMAGE_NAME}}"
       docker:
-        dockerfile: Dockerfile
+        dockerfile: Dockerfile.dev
       sync:
         manual:
           - src: "src/**/*.*"
             dest: .
 deploy:
   helm:
-    releases:
+   releases:
     - name: mx-bank-service
       chartPath: deploy/k8s
       valuesFiles:
         - deploy/k8s/values.yaml
       setValueTemplates:
         image.repository: "{{.IMAGE_NAME}}"
-      # namespace: mx-bank-service
+      namespace: mx-bank-service
       createNamespace: true
-
-  # kubectl: { 
-  #   defaultNamespace: mx-bank-service 
-  #   }
-# manifests:
-#   rawYaml:
-#     - './deploy/k8s/templates/namespace.yml'
-#     - './deploy/k8s/templates/peer-authentication.yml'
-#     - './deploy/k8s/templates/tx-svc/configmap.yml'
-#     - './deploy/k8s/templates/tx-svc/service.yml'
-#     - './deploy/k8s/templates/tx-svc/ingress.yml'
-#     - './deploy/k8s/templates/tx-svc/secret.yml'
-#     - './deploy/k8s/templates/tx-svc/deployment.yml'
-#     - './deploy/k8s/templates/db/pvc.yml'
-#     - './deploy/k8s/templates/db/configmap.yml'
-#     - './deploy/k8s/templates/db/network-policy.yml'
-#     - './deploy/k8s/templates/db/deployment.yml'
-#     - './deploy/k8s/templates/db/service.yml'

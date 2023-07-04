@@ -2,7 +2,7 @@
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 324654522070.dkr.ecr.us-east-1.amazonaws.com
 
 ECR_REPOSITORY=$(aws ecr describe-repositories \
-    --repository-names dev-mx-bank-service-repository \
+    --repository-names dev-mx-bank-repository \
     --query 'repositories[0].repositoryUri' \
     --output text)
 IMAGE_TAG=$(openssl rand -hex 16)

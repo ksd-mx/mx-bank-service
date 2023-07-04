@@ -45,3 +45,4 @@ generate "helm_provider" {
 
     EOF
 }
+
