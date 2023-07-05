@@ -42,7 +42,7 @@ jobs:
 
     - name: Get kubeconfig from EKS cluster
       run: |
-        aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name $(terragrunt output eks_name) --kubeconfig ~/.kube/config
+        aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name $(terragrunt output cluster_name) --kubeconfig ~/.kube/config
 
     - name: Upload kubeconfig
       uses: actions/upload-artifact@v2

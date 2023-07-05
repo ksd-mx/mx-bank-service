@@ -13,9 +13,8 @@ include "env" {
 }
 
 inputs = {
-  env                             = include.env.locals.env
-  eks_name                        = dependency.eks.outputs.eks_name
-  openid_provider_arn             = dependency.eks.outputs.openid_provider_arn
+  cluster_name                    = dependency.eks.outputs.cluster_name
+  oidc_provider_arn               = dependency.eks.outputs.oidc_provider_arn
   enable_cluster_autoscaler       = true
   cluster_autoscaler_helm_version = "9.28.0"
 }
@@ -29,20 +28,16 @@ generate "helm_provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
     data "aws_eks_cluster" "eks" {
-        name = var.eks_name
+        name = var.cluster_name
     }
     data "aws_eks_cluster_auth" "eks" {
-        name = var.eks_name
+        name = var.cluster_name
     }
     provider "helm" {
       kubernetes {
         host                   = data.aws_eks_cluster.eks.endpoint
         cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-        exec {
-          api_version = "client.authentication.k8s.io/v1beta1"
-          args        = ["eks", "get-token", "--cluster-name", data.aws_eks_cluster.eks.name]
-          command     = "aws"
-        }
+        token                  = data.aws_eks_cluster_auth.eks.token
       }
     }
     EOF

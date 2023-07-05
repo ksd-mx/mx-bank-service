@@ -1,3 +1,7 @@
+locals {
+  namespace = "mx-bank"
+}
+
 remote_state {
   backend = "s3"
   generate = {
@@ -21,9 +25,8 @@ generate "provider" {
   contents = <<EOF
     provider "aws" {
         region = "us-east-1"
-        profile = "terraform"
         assume_role {
-            role_arn = "arn:aws:iam::324654522070:role/terraform-deployment-role"
+          role_arn = "arn:aws:iam::324654522070:role/terraform-deployment-role"
         }
     }
     EOF

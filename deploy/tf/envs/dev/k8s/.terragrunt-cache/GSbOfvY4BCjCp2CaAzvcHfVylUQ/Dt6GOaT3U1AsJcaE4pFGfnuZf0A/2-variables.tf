@@ -1,9 +1,4 @@
-variable "env" {
-    description = "Environment name."
-    type = string
-}
-
-variable "eks_name" {
+variable "cluster_name" {
     description = "Name of the cluster."
     type = string
 }
@@ -19,7 +14,7 @@ variable "cluster_autoscaler_helm_version" {
     type = string
 }
 
-variable "openid_provider_arn" {
+variable "oidc_provider_arn" {
     description = "IAM OpenId Connect Provider ARN."
     type = string
 }

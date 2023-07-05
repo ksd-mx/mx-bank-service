@@ -3,12 +3,12 @@ variable "env" {
   type        = string
 }
 
-variable "eks_version" {
+variable "cluster_version" {
   description = "Desired Kubernetes master version."
   type        = string
 }
 
-variable "eks_name" {
+variable "cluster_name" {
   description = "Name of the EKS cluster."
   type        = string
 }
