@@ -175,5 +175,6 @@ __pycache__
 
 # Terragrunt
 .terragrunt-cache 
+**/.terragrunt-cache/*
 
 **/registry-creds/*

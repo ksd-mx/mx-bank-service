@@ -11,7 +11,7 @@ build:
         dockerfile: Dockerfile.dev
       sync:
         manual:
-          - src: "services/transaction//**/*.*"
+          - src: "services/transaction/**/*.*"
             dest: .
 deploy:
   helm:
