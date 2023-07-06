@@ -19,5 +19,4 @@ The modules include definitions for an AWS API Gateway and a VPC link:
 
 * The 2-private-link.tf file describes the resources for a VPC link and a security group. The security group is associated with the VPC link. The VPC link is associated with the API Gateway and uses the security group's id​4​.
 
-
 ![alt text](./architecture.png?raw=true)
