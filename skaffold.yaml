@@ -1,7 +1,7 @@
 apiVersion: skaffold/v4beta5
 kind: Config
 metadata:
-  name: mx-bank-service
+  name: mx-bank
 build:
   local:
     push: true
@@ -11,16 +11,16 @@ build:
         dockerfile: Dockerfile.dev
       sync:
         manual:
-          - src: "src/**/*.*"
+          - src: "services/transaction/**/*.*"
             dest: .
 deploy:
   helm:
    releases:
-    - name: mx-bank-service
-      chartPath: deploy/k8s
+    - name: transaction-service
+      chartPath: deploy/k8s/charts/transaction-service
       valuesFiles:
-        - deploy/k8s/values.yaml
+        - deploy/k8s/charts/transaction-service/values/values.dev.yaml
       setValueTemplates:
         image.repository: "{{.IMAGE_NAME}}"
-      namespace: mx-bank-service
+      namespace: transaction-service
       createNamespace: true
