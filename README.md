@@ -1,4 +1,4 @@
-# MX BANK SERVICE ( PoC )
+# MX BANK SERVICE ( PoC ) - CURRENTLY IN PROGRESS 🚧
 
 The "mx-bank-service" project on GitHub is a Proof of Concept (PoC) for a simple banking service built in Golang, with its CI/CD pipeline and Kubernetes deployment manifests. The languages used in the project include HCL (HashiCorp Configuration Language), Go, Shell, and Dockerfile​1​.
 
