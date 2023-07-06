@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	ck "github.com/confluentinc/confluent-kafka-go/kafka"
-	"github.com/ksd-mx/mx-payments/tx-svc/adapter/presenter/transaction"
-	"github.com/ksd-mx/mx-payments/tx-svc/domain/entity"
-	"github.com/ksd-mx/mx-payments/tx-svc/usecase/process_transaction"
+	"github.com/ksd-mx/mx-bank/services/transaction/adapter/presenter/transaction"
+	"github.com/ksd-mx/mx-bank/services/transaction/domain/entity"
+	"github.com/ksd-mx/mx-bank/services/transaction/usecase/process_transaction"
 	"github.com/stretchr/testify/assert"
 )
 

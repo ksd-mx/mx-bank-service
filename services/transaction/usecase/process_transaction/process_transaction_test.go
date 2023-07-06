@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
-	"github.com/ksd-mx/mx-payments/tx-svc/adapter/broker"
-	mock_broker "github.com/ksd-mx/mx-payments/tx-svc/adapter/broker/mock"
-	"github.com/ksd-mx/mx-payments/tx-svc/domain/entity"
-	mock_repository "github.com/ksd-mx/mx-payments/tx-svc/domain/repository/mock"
+	"github.com/ksd-mx/mx-bank/services/transaction/adapter/broker"
+	mock_broker "github.com/ksd-mx/mx-bank/services/transaction/adapter/broker/mock"
+	"github.com/ksd-mx/mx-bank/services/transaction/domain/entity"
+	mock_repository "github.com/ksd-mx/mx-bank/services/transaction/domain/repository/mock"
 	"github.com/stretchr/testify/assert"
 )
 

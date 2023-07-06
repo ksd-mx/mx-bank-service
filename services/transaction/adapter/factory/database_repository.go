@@ -3,8 +3,8 @@ package factory
 import (
 	"database/sql"
 
-	repo "github.com/ksd-mx/mx-payments/tx-svc/adapter/repository"
-	"github.com/ksd-mx/mx-payments/tx-svc/domain/repository"
+	repo "github.com/ksd-mx/mx-bank/services/transaction/adapter/repository"
+	"github.com/ksd-mx/mx-bank/services/transaction/domain/repository"
 )
 
 type RepositoryDatabaseFactory struct {

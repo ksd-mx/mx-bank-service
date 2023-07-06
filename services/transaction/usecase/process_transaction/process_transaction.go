@@ -3,9 +3,9 @@ package process_transaction
 import (
 	"log"
 
-	"github.com/ksd-mx/mx-payments/tx-svc/adapter/broker"
-	"github.com/ksd-mx/mx-payments/tx-svc/domain/entity"
-	"github.com/ksd-mx/mx-payments/tx-svc/domain/repository"
+	"github.com/ksd-mx/mx-bank/services/transaction/adapter/broker"
+	"github.com/ksd-mx/mx-bank/services/transaction/domain/entity"
+	"github.com/ksd-mx/mx-bank/services/transaction/domain/repository"
 )
 
 type ProcessTransaction struct {

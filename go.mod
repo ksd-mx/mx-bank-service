@@ -1,3 +1,3 @@
-module github.com/ksd-mx/mx-bank-service
+module github.com/ksd-mx/mx-bank/services/transaction
 
 go 1.20

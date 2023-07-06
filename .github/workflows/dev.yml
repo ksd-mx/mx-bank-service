@@ -1,176 +1,182 @@
-name: CI/CD pipeline
+# TEMPORARELY DISABLING THIS WORKFLOW
+# TEMPORARELY DISABLING THIS WORKFLOW
+# TEMPORARELY DISABLING THIS WORKFLOW
+# TEMPORARELY DISABLING THIS WORKFLOW
+# TEMPORARELY DISABLING THIS WORKFLOW
 
-on:
-  push:
-    branches: [ main ]
+# name: CI/CD pipeline
 
-jobs:
-  deploy-to-aws:
-    runs-on: ubuntu-latest
-    environment: DEV
+# on:
+#   push:
+#     branches: [ main ]
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ vars.AWS_REGION }}
-        role-to-assume: ${{ secrets.ROLE }}
-        role-session-name: terraform-github
-        role-duration-seconds: 3600
-        mask-aws-account-id: 'no'
+# jobs:
+#   deploy-to-aws:
+#     runs-on: ubuntu-latest
+#     environment: DEV
 
-    - name: Install Terragrunt
-      run: |
-        TERRAGRUNT_VERSION=$(curl -s https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest | jq -r .tag_name)
-        wget https://github.com/gruntwork-io/terragrunt/releases/download/$TERRAGRUNT_VERSION/terragrunt_linux_amd64
-        chmod +x terragrunt_linux_amd64
-        sudo mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v3
+#     - name: Configure AWS credentials
+#       uses: aws-actions/configure-aws-credentials@v2
+#       with:
+#         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#         aws-region: ${{ vars.AWS_REGION }}
+#         role-to-assume: ${{ secrets.ROLE }}
+#         role-session-name: terraform-github
+#         role-duration-seconds: 3600
+#         mask-aws-account-id: 'no'
 
-    - name: Apply Terraform scripts
-      id: terragrunt
-      run: |
-        cd deploy/infra/$(echo $ENVIRONMENT | tr '[:upper:]' '[:lower:]')
-        terragrunt run-all apply --terragrunt-non-interactive
-        outputs=$(terragrunt run-all output -json 2>/dev/null | tr -d '\n')
-        EKS_CLUSTER_NAME=$(echo "$outputs" | jq -r '.cluster_name.value // empty')
-        EKS_CLUSTER_ARN=$(echo "$outputs" | jq -r '.cluster_arn.value // empty')
-        echo "ECR_REPOSITORY=${ECR_REPOSITORY}" >> $GITHUB_OUTPUT
-        echo "EKS_CLUSTER_NAME=${EKS_CLUSTER_NAME}" >> $GITHUB_OUTPUT
-        echo "::set-output name=ECR_REPOSITORY::$ECR_REPOSITORY"
-        echo "::set-output name=EKS_CLUSTER_NAME::$EKS_CLUSTER_NAME"
-        echo "::set-output name=EKS_CLUSTER_ARN::$EKS_CLUSTER_ARN"
+#     - name: Install Terragrunt
+#       run: |
+#         TERRAGRUNT_VERSION=$(curl -s https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest | jq -r .tag_name)
+#         wget https://github.com/gruntwork-io/terragrunt/releases/download/$TERRAGRUNT_VERSION/terragrunt_linux_amd64
+#         chmod +x terragrunt_linux_amd64
+#         sudo mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
 
-    - name: Install and configure AWS CLI
-      run: |
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip
-        sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+#     - name: Apply Terraform scripts
+#       id: terragrunt
+#       run: |
+#         cd deploy/infra/$(echo $ENVIRONMENT | tr '[:upper:]' '[:lower:]')
+#         terragrunt run-all apply --terragrunt-non-interactive
+#         outputs=$(terragrunt run-all output -json 2>/dev/null | tr -d '\n')
+#         EKS_CLUSTER_NAME=$(echo "$outputs" | jq -r '.cluster_name.value // empty')
+#         EKS_CLUSTER_ARN=$(echo "$outputs" | jq -r '.cluster_arn.value // empty')
+#         echo "ECR_REPOSITORY=${ECR_REPOSITORY}" >> $GITHUB_OUTPUT
+#         echo "EKS_CLUSTER_NAME=${EKS_CLUSTER_NAME}" >> $GITHUB_OUTPUT
+#         echo "::set-output name=ECR_REPOSITORY::$ECR_REPOSITORY"
+#         echo "::set-output name=EKS_CLUSTER_NAME::$EKS_CLUSTER_NAME"
+#         echo "::set-output name=EKS_CLUSTER_ARN::$EKS_CLUSTER_ARN"
 
-    - name: Get kubeconfig from EKS cluster
-      run: |
-        EKS_CLUSTER_NAME=${{ steps.terragrunt.outputs.EKS_CLUSTER_NAME }}
-        aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME --kubeconfig ~/.kube/config
+#     - name: Install and configure AWS CLI
+#       run: |
+#         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+#         unzip awscliv2.zip
+#         sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
 
-    - name: Upload kubeconfig
-      uses: actions/upload-artifact@v2
-      with:
-        name: kubeconfig
-        path: ~/.kube/config
+#     - name: Get kubeconfig from EKS cluster
+#       run: |
+#         EKS_CLUSTER_NAME=${{ steps.terragrunt.outputs.EKS_CLUSTER_NAME }}
+#         aws eks update-kubeconfig --region $AWS_REGION --name $EKS_CLUSTER_NAME --kubeconfig ~/.kube/config
 
-    - name: Upload k8s templates
-      uses: actions/upload-artifact@v2
-      with:
-        name: k8s-templates
-        path: deploy/k8s/templates/
+#     - name: Upload kubeconfig
+#       uses: actions/upload-artifact@v2
+#       with:
+#         name: kubeconfig
+#         path: ~/.kube/config
 
-    outputs:
-      EKS_CLUSTER_ARN: ${{ steps.terragrunt.outputs.EKS_CLUSTER_ARN }}
-      EKS_CLUSTER_NAME: ${{ steps.terragrunt.outputs.EKS_CLUSTER_NAME }}
+#     - name: Upload k8s templates
+#       uses: actions/upload-artifact@v2
+#       with:
+#         name: k8s-templates
+#         path: deploy/k8s/templates/
 
-  build-and-push:
-    needs: deploy-to-aws
-    runs-on: ubuntu-latest
-    environment: DEV
+#     outputs:
+#       EKS_CLUSTER_ARN: ${{ steps.terragrunt.outputs.EKS_CLUSTER_ARN }}
+#       EKS_CLUSTER_NAME: ${{ steps.terragrunt.outputs.EKS_CLUSTER_NAME }}
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ vars.AWS_REGION }}
-        role-to-assume: ${{ secrets.ROLE }}
-        role-session-name: terraform-github
-        role-duration-seconds: 3600
-        mask-aws-account-id: 'no'
+#   build-and-push:
+#     needs: deploy-to-aws
+#     runs-on: ubuntu-latest
+#     environment: DEV
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v3
+#     - name: Configure AWS credentials
+#       uses: aws-actions/configure-aws-credentials@v2
+#       with:
+#         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#         aws-region: ${{ vars.AWS_REGION }}
+#         role-to-assume: ${{ secrets.ROLE }}
+#         role-session-name: terraform-github
+#         role-duration-seconds: 3600
+#         mask-aws-account-id: 'no'
 
-    - name: Build, tag, and push image to Amazon ECR
-      id: build-and-push
-      env:
-        IMAGE_TAG: ${{ github.sha }} 
-      run: |
-        ECR_REPOSITORY=${{ vars.ECR_REPOSITORY }}
-        docker build -t $ECR_REPOSITORY:latest .
-        docker tag $ECR_REPOSITORY:latest $ECR_REPOSITORY:$IMAGE_TAG
-        docker push $ECR_REPOSITORY:latest
-        docker push $ECR_REPOSITORY:$IMAGE_TAG
-        echo "::set-output name=IMAGE::$ECR_REPOSITORY:$IMAGE_TAG"
+#     - name: Login to Amazon ECR
+#       id: login-ecr
+#       uses: aws-actions/amazon-ecr-login@v1
 
-    outputs:
-      EKS_CLUSTER_ARN: ${{ needs.deploy-to-aws.outputs.EKS_CLUSTER_ARN }}
-      EKS_CLUSTER_NAME: ${{ needs.deploy-to-aws.outputs.EKS_CLUSTER_NAME }}
-      IMAGE: ${{ steps.build-and-push.outputs.IMAGE }}
+#     - name: Build, tag, and push image to Amazon ECR
+#       id: build-and-push
+#       env:
+#         IMAGE_TAG: ${{ github.sha }} 
+#       run: |
+#         ECR_REPOSITORY=${{ vars.ECR_REPOSITORY }}
+#         docker build -t $ECR_REPOSITORY:latest .
+#         docker tag $ECR_REPOSITORY:latest $ECR_REPOSITORY:$IMAGE_TAG
+#         docker push $ECR_REPOSITORY:latest
+#         docker push $ECR_REPOSITORY:$IMAGE_TAG
+#         echo "::set-output name=IMAGE::$ECR_REPOSITORY:$IMAGE_TAG"
 
-  deploy-to-eks:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    environment: DEV
+#     outputs:
+#       EKS_CLUSTER_ARN: ${{ needs.deploy-to-aws.outputs.EKS_CLUSTER_ARN }}
+#       EKS_CLUSTER_NAME: ${{ needs.deploy-to-aws.outputs.EKS_CLUSTER_NAME }}
+#       IMAGE: ${{ steps.build-and-push.outputs.IMAGE }}
 
-    steps:
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ vars.AWS_REGION }}
-        role-to-assume: ${{ secrets.ROLE }}
-        role-session-name: terraform-github
-        role-duration-seconds: 1200
-        mask-aws-account-id: 'no'
+#   deploy-to-eks:
+#     needs: build-and-push
+#     runs-on: ubuntu-latest
+#     environment: DEV
 
-    - name: Download kubeconfig
-      uses: actions/download-artifact@v2
-      with:
-        name: kubeconfig
-        path: ~/.kube/
+#     steps:
+#     - name: Configure AWS credentials
+#       uses: aws-actions/configure-aws-credentials@v2
+#       with:
+#         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#         aws-region: ${{ vars.AWS_REGION }}
+#         role-to-assume: ${{ secrets.ROLE }}
+#         role-session-name: terraform-github
+#         role-duration-seconds: 1200
+#         mask-aws-account-id: 'no'
 
-    - name: Download k8s templates
-      uses: actions/download-artifact@v2
-      with:
-        name: k8s-templates
-        path: deploy/k8s/templates/
+#     - name: Download kubeconfig
+#       uses: actions/download-artifact@v2
+#       with:
+#         name: kubeconfig
+#         path: ~/.kube/
 
-    - name: Install Kubectl
-      run: |
-        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-        chmod +x kubectl
-        sudo mv kubectl /usr/local/bin/
+#     - name: Download k8s templates
+#       uses: actions/download-artifact@v2
+#       with:
+#         name: k8s-templates
+#         path: deploy/k8s/templates/
 
-    - name: Install Helm
-      run: |
-        curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -
-        sudo apt-get install apt-transport-https --yes
-        echo "deb https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
-        sudo apt-get update
-        sudo apt-get install helm/
+#     - name: Install Kubectl
+#       run: |
+#         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+#         chmod +x kubectl
+#         sudo mv kubectl /usr/local/bin/
 
-    - name: Connect to EKS
-      run: |
-        kubectl create configmap tx-svc-config --from-literal=DB_HOST=postgresql --dry-run=client -o yaml | kubectl apply -f -
-        kubectl config use-context ${{ needs.build-and-push.outputs.EKS_CLUSTER_ARN }}
+#     - name: Install Helm
+#       run: |
+#         curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -
+#         sudo apt-get install apt-transport-https --yes
+#         echo "deb https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+#         sudo apt-get update
+#         sudo apt-get install helm/
 
-    - name: Install Istio using Helm
-      run: |
-        helm repo add istio https://istio-release.storage.googleapis.com/charts
-        helm repo update
-        helm install istio-base istio/base --namespace istio-system --create-namespace
-        helm install istiod istio/istiod --namespace istio-system
+#     - name: Connect to EKS
+#       run: |
+#         kubectl create configmap tx-svc-config --from-literal=DB_HOST=postgresql --dry-run=client -o yaml | kubectl apply -f -
+#         kubectl config use-context ${{ needs.build-and-push.outputs.EKS_CLUSTER_ARN }}
 
-    - name: Deploy to EKS
-      run: |        
-        kubectl apply -f deploy/k8s/templates/namespace.yml
-        kubectl apply -f deploy/k8s/templates/tx-svc -n mx-bank-service
-        kubectl apply -f deploy/k8s/templates/db -n mx-bank-service 
-        kubectl get all -n mx-bank-service
-        kubectl get deployments -n mx-bank-service
-        kubectl set image deployment/tx-svc tx-svc=${{ needs.build-and-push.outputs.IMAGE }} -n mx-bank-service
+#     - name: Install Istio using Helm
+#       run: |
+#         helm repo add istio https://istio-release.storage.googleapis.com/charts
+#         helm repo update
+#         helm install istio-base istio/base --namespace istio-system --create-namespace
+#         helm install istiod istio/istiod --namespace istio-system
+
+#     - name: Deploy to EKS
+#       run: |        
+#         kubectl apply -f deploy/k8s/templates/namespace.yml
+#         kubectl apply -f deploy/k8s/templates/tx-svc -n mx-bank-service
+#         kubectl apply -f deploy/k8s/templates/db -n mx-bank-service 
+#         kubectl get all -n mx-bank-service
+#         kubectl get deployments -n mx-bank-service
+#         kubectl set image deployment/tx-svc tx-svc=${{ needs.build-and-push.outputs.IMAGE }} -n mx-bank-service

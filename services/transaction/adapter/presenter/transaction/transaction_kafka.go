@@ -3,7 +3,7 @@ package transaction
 import (
 	"encoding/json"
 
-	"github.com/ksd-mx/mx-payments/tx-svc/usecase/process_transaction"
+	"github.com/ksd-mx/mx-bank/services/transaction/usecase/process_transaction"
 )
 
 type KafkaPresenter struct {

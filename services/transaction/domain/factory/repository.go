@@ -1,7 +1,7 @@
 package factory
 
 import (
-	"github.com/ksd-mx/mx-payments/tx-svc/domain/repository"
+	"github.com/ksd-mx/mx-bank/services/transaction/domain/repository"
 )
 
 type RepositoryFactory interface {

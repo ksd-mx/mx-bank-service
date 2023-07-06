@@ -2,8 +2,8 @@ package kafka
 
 import (
 	ck "github.com/confluentinc/confluent-kafka-go/kafka"
-	"github.com/ksd-mx/mx-payments/tx-svc/adapter/presenter"
-	"github.com/ksd-mx/mx-payments/tx-svc/usecase/process_transaction"
+	"github.com/ksd-mx/mx-bank/services/transaction/adapter/presenter"
+	"github.com/ksd-mx/mx-bank/services/transaction/usecase/process_transaction"
 )
 
 type Producer struct {

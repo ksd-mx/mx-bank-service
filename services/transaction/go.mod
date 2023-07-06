@@ -1,4 +1,4 @@
-module github.com/ksd-mx/mx-payments/tx-svc
+module github.com/ksd-mx/mx-bank/services/transaction
 
 go 1.18
 

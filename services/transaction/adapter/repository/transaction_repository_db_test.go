@@ -4,8 +4,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ksd-mx/mx-payments/tx-svc/adapter/repository/fixture"
-	"github.com/ksd-mx/mx-payments/tx-svc/domain/entity"
+	"github.com/ksd-mx/mx-bank/services/transaction/adapter/repository/fixture"
+	"github.com/ksd-mx/mx-bank/services/transaction/domain/entity"
 	"github.com/stretchr/testify/assert"
 )
 
