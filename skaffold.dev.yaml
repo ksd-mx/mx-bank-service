@@ -24,3 +24,4 @@ deploy:
         image.repository: "{{.IMAGE_NAME}}"
       namespace: transaction-service
       createNamespace: true
+
