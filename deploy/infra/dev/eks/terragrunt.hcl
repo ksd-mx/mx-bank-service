@@ -34,30 +34,7 @@ inputs = {
 
   enable_irsa = true
 
-  # cluster_addons = {
-  #   coredns = {
-  #     preserve    = true
-  #     most_recent = true
-
-  #     timeouts = {
-  #       create = "25m"
-  #       delete = "10m"
-  #     }
-
-  #     configuration_values = jsonencode({
-  #       computeType = "Fargate"
-  #     })
-  #   }
-  #   kube-proxy = {
-  #     most_recent = true
-  #   }
-  #   vpc-cni = {
-  #     most_recent = true
-  #   }
-  # }
-
   fargate_profile_defaults = {
-    # pod_execution_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/eksctl-${local.prefix}-eks-cluster-FargatePodExecutionRole-1JQJX5QXQYJ6"
     iam_role_additional_policies = {
       1 = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
       2 = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
