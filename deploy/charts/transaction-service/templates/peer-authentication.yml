@@ -1,8 +1,8 @@
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
-  name: mx-bank-service-peer-authentication
-  namespace: mx-bank-service
+  name: peer-authentication
+  namespace: {{ .Release.Namespace }}
 spec:
   mtls:
     mode: STRICT

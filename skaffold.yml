@@ -1,0 +1,44 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: mx-bank
+build:
+  local:
+    push: false
+  artifacts:
+    - image: mx-transaction-service
+      context: ./services/transaction
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: "**/*.*"
+            dest: .
+    # - image: mx-order-service
+    #   context: ./services/order
+    #   docker:
+    #     dockerfile: Dockerfile.dev
+    #   sync:
+    #     manual:
+    #       - src: "**/*.*"
+    #         dest: .
+deploy:
+  helm:
+   releases:
+    - name: transaction-service
+      chartPath: deploy/charts/transaction-service
+      valuesFiles:
+        - deploy/charts/transaction-service/values/values.dev.yaml
+      setValueTemplates:
+        image.repository: "324654522070.dkr.ecr.us-east-1.amazonaws.com/dev-mx-bank-repository"
+      namespace: transaction-service
+      createNamespace: true
+    # - name: order-service
+    #   chartPath: deploy/k8s/charts/order-service
+    #   valuesFiles:
+    #     - deploy/k8s/charts/order-service/values/values.dev.yaml
+    #   setValueTemplates:
+    #     image.repository: $ORDER_SERVICE_IMAGE_NAME
+    #   namespace: order-service
+    #   createNamespace: true
+

@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello-world
+  name: order-service
   labels:
-    app: hello-world
+    app: order-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hello-world
+      app: order-service
   template:
     metadata:
       labels:
-        app: hello-world
+        app: order-service
     spec:
       containers:
-      - name: hello-world
+      - name: order-service
         image: 324654522070.dkr.ecr.us-east-1.amazonaws.com/dev-mx-bank-repository:latest
         ports:
         - name: http
@@ -25,7 +25,7 @@ spec:
         - name: DB_HOST
           valueFrom:
             configMapKeyRef:
-              name: hello-world-config
+              name: order-service-config
               key: DB_HOST
         - name: DB_USER
           valueFrom:

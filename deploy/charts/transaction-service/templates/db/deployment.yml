@@ -13,7 +13,7 @@ spec:
     metadata:
       labels:
         app: postgresql
-        allow-from: hello-world
+        allow-from: transaction-service
     spec:
       containers:
       - name: postgresql

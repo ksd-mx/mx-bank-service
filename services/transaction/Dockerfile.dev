@@ -1,7 +1,11 @@
 FROM golang:1.18 as builder
+
 WORKDIR /go/src
+
 COPY go.mod go.sum ./
+
 RUN go mod download
+
 COPY ./ ./
 
 RUN apt-get update && \
@@ -11,9 +15,12 @@ RUN apt-get update && \
   ldconfig &&\
   cd ../ && rm -rf librdkafka
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/main.go
+RUN go build -a -installsuffix cgo -o main ./cmd/main.go
 
 FROM gcr.io/distroless/base
+
 COPY --from=builder /go/src/main .
+
 USER nonroot:nonroot
+
 CMD ["/main"]
