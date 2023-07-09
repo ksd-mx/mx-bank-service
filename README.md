@@ -42,10 +42,7 @@ Your infrastructure should now be set up and running on AWS.
 
 [Skaffold](https://skaffold.dev/) is a command line tool that facilitates continuous development for Kubernetes applications. It handles the workflow for building, pushing, and deploying applications, allowing you to focus on writing your code.
 
-To install Skaffold, follow the [official installation instructions](https://skaffold.dev/docs/install/). In short, if you're using macOS, you can use Homebrew:
-
-```bash
-brew install skaffold
+To install Skaffold, follow the [official installation instructions](https://skaffold.dev/docs/install/).
 
 # Running Services Locally with Skaffold
 
