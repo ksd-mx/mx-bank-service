@@ -1,0 +1,94 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Template to deploy CloudFront and S3 Bucket for WebHosting
+Parameters:
+  DeploymentId:
+    Type: String
+    Default: main
+    Description: A deployment identification ID (commonly the GIT branch or PR number)
+  TenantId:
+    Type: String
+    Default: pooled
+    Description: Tenant ID for the stack
+Resources:
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: 'Origin Access Identity for CloudFront Distributions'
+
+  WebHostingBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Join ['', [platform-marketplace, !Ref DeploymentId ]]
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+
+  WebHostingReadPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebHostingBucket
+      PolicyDocument:
+        Statement:
+          - Action: 's3:GetObject'
+            Effect: Allow
+            Resource: !Sub 'arn:aws:s3:::${WebHostingBucket}/*'
+            Principal:
+              CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
+
+  WebHostingDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: '/index.html'
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: '/index.html'
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - HEAD
+            - GET
+          Compress: true
+          DefaultTTL: 3600 # in seconds
+          ForwardedValues:
+            Cookies:
+              Forward: none
+            QueryString: false
+          MaxTTL: 86400 # in seconds
+          MinTTL: 60 # in seconds
+          TargetOriginId: WebHosting-s3origin
+          ViewerProtocolPolicy: 'redirect-to-https'
+        DefaultRootObject: 'index.html'
+        Enabled: true
+        HttpVersion: http2
+        Origins:
+          - DomainName: !GetAtt 'WebHostingBucket.RegionalDomainName'
+            Id: WebHosting-s3origin
+            S3OriginConfig:
+              OriginAccessIdentity:
+                !Join [
+                  '',
+                  [
+                    'origin-access-identity/cloudfront/',
+                    !Ref CloudFrontOriginAccessIdentity,
+                  ],
+                ]
+        PriceClass: 'PriceClass_All'
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+
+Outputs:
+  WebHostingBucketName:
+    Description: The name of the bucket for uploading Assets Multimedia to.
+    Value: !Ref WebHostingBucket
+  WebHostingCloudFrontUrl:
+    Description: The name of the CloudFront url for Assets Multimedia.
+    Value: !GetAtt WebHostingDistribution.DomainName

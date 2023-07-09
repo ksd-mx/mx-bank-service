@@ -1,0 +1,48 @@
+version: 0.2
+env:
+  variables:
+      BACKEND_STACK_NAME: platform-backend-pr-39
+phases:
+  install:
+    runtime-versions:
+       nodejs: 14
+    commands:
+      - BUILD_TRIGGER=`[ $CODEBUILD_WEBHOOK_TRIGGER ] && echo $CODEBUILD_WEBHOOK_TRIGGER || echo $CODEBUILD_SOURCE_VERSION`
+      - DEPLOYMENT_ID=$(echo $BUILD_TRIGGER | sed 's/\//-/g')
+      - STACK_NAME=platform-marketplace-$DEPLOYMENT_ID
+      - BUCKET_NAME=blockparty-platform-build-artifacts-$(echo $STAGE | tr '[:upper:]' '[:lower:]')
+      - npm install -g yarn
+      - chmod +x scripts/check-stack.sh scripts/get-backend-endpoints.sh
+  pre_build:
+    commands:
+      - yarn install
+      - yarn lint
+  build:
+    commands:
+      - (cd scripts && ./check-stack.sh --stack-name $STACK_NAME)
+      - yarn build 
+      - > 
+        sam build 
+        --template template.yml 
+        --parameter-overrides Stage=$STAGE DeploymentId=$DEPLOYMENT_ID
+  post_build:
+    commands:
+      - (cd scripts && ./get-backend-endpoints.sh --stack-name $BACKEND_STACK_NAME)
+      - >
+        sam deploy 
+        --s3-bucket $BUCKET_NAME
+        --config-file template.toml 
+        --region=$AWS_REGION 
+        --stack-name=$STACK_NAME 
+        --no-fail-on-empty-changeset 
+        --parameter-overrides Stage=$STAGE DeploymentId=$DEPLOYMENT_ID
+      - >
+        APP_SITE_BUCKET=$(aws cloudformation describe-stacks 
+        --stack-name=$STACK_NAME 
+        --region=$AWS_REGION 
+        --query="Stacks[0].Outputs[?OutputKey=='WebHostingBucketName'].OutputValue" 
+        --output=text)
+      - > 
+        aws s3 sync 
+        --delete 
+        --cache-control no-store out s3://$APP_SITE_BUCKET

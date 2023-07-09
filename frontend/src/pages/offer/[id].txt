@@ -1,0 +1,16 @@
+import type { GetStaticProps, NextPage } from 'next'
+
+const OfferPage: NextPage = () => {
+  return ( 
+    <div>
+    </div> 
+  )
+}
+
+export const getStaticProps: GetStaticProps = async (contextx) => {
+
+}
+
+export default OfferPage
+
+
