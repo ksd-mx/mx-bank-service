@@ -5,7 +5,6 @@ Include a summary of the change and which issue was fixed. Also include relevant
 ## Changes
 * Change item
 * Change item
-* Change item
 
 ## Change type
 - [ ] New feature - **feature** (changes that adds new functionality)
