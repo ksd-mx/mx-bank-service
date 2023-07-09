@@ -1,0 +1,8 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+confirm_changeset = false
+capabilities = "CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND"
+cached = "true"
+parallel = "true"
