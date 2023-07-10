@@ -12,9 +12,7 @@ export class OrdersService {
   ) {}
 
   create(createOrderDto: CreateOrderDto) {
-    return this.orderModel.create({
-      ...createOrderDto
-    });
+    return this.orderModel.create({ ...createOrderDto });
   }
 
   findAll() {

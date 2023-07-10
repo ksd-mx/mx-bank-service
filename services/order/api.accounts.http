@@ -1,0 +1,23 @@
+GET http://localhost:3000/accounts
+
+###
+GET http://localhost:3000/accounts/6d270a31-5145-4ad0-aeb3-dd1dcb15a79c
+
+###
+POST http://localhost:3000/accounts
+Content-Type: application/json
+
+{
+    "name": "conta 1"
+}
+
+###
+PATCH http://localhost:3000/accounts/6d270a31-5145-4ad0-aeb3-dd1dcb15a79c
+Content-Type: application/json
+
+{
+    "name": "conta 1.1"
+}
+
+###
+DELETE http://localhost:3000/accounts/302196cf-8d02-4ef3-a6cf-052014e7140f
