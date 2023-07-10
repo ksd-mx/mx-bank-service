@@ -25,11 +25,13 @@ export class OrdersService {
     return this.orderModel.findByPk(id);
   }
 
-  update(id: string, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
+  async update(id: string, updateOrderDto: UpdateOrderDto) {
+    const item : any = await this.findOne(id);  
+    return item.update(updateOrderDto);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} order`;
+  async remove(id: string) {
+    const item : any = await this.findOne(id);  
+    return item.destroy();
   }
 }

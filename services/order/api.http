@@ -1,6 +1,9 @@
 GET http://localhost:3000/orders
 
 ###
+GET http://localhost:3000/orders/75c8f761-4bfb-41b9-aedf-ce2b9349d079
+
+###
 POST http://localhost:3000/orders
 Content-Type: application/json
 
@@ -9,3 +12,14 @@ Content-Type: application/json
     "creditCardNumber": "1234567890123456",
     "creditCardName": "Claudio Cidade"
 }
+
+###
+PATCH http://localhost:3000/orders/75c8f761-4bfb-41b9-aedf-ce2b9349d079
+Content-Type: application/json
+
+{
+    "amount": 60.00
+}
+
+###
+DELETE http://localhost:3000/orders/85f946e5-08e1-4058-afeb-05f04d2b5096
