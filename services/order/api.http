@@ -1,0 +1,11 @@
+GET http://localhost:3000/orders
+
+###
+POST http://localhost:3000/orders
+Content-Type: application/json
+
+{
+    "amount": 30.00,
+    "creditCardNumber": "1234567890123456",
+    "creditCardName": "Claudio Cidade"
+}
