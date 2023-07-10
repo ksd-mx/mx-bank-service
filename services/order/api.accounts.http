@@ -1,7 +1,7 @@
 GET http://localhost:3000/accounts
 
 ###
-GET http://localhost:3000/accounts/6d270a31-5145-4ad0-aeb3-dd1dcb15a79c
+GET http://localhost:3000/accounts/0fdf28ca-9bfa-447b-a174-b5aac0a9070b
 
 ###
 POST http://localhost:3000/accounts
@@ -12,7 +12,7 @@ Content-Type: application/json
 }
 
 ###
-PATCH http://localhost:3000/accounts/6d270a31-5145-4ad0-aeb3-dd1dcb15a79c
+PATCH http://localhost:3000/accounts/0fdf28ca-9bfa-447b-a174-b5aac0a9070b
 Content-Type: application/json
 
 {
@@ -20,4 +20,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3000/accounts/302196cf-8d02-4ef3-a6cf-052014e7140f
+DELETE http://localhost:3000/accounts/64ba1595-411c-4dcd-b120-0ee8fd13b586

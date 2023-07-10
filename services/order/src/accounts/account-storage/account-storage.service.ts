@@ -1,12 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { Account } from '../entities/account.entity';
 import { AccountsService } from '../accounts.service';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class AccountStorageService {
-    private accounts: Account | null = null;
+    private _account: Account | null = null;
 
     constructor (private accountSevice: AccountsService) {}
 
-    setBy(token: string) {}
+    get account() { 
+        return this._account;
+    }
+
+    async setBy(token: string) { 
+        this._account = await this.accountSevice.findByToken(token); 
+    }
 }

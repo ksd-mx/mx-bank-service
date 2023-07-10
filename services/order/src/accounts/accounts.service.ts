@@ -1,10 +1,10 @@
-import { Injectable, Scope } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
 import { InjectModel } from '@nestjs/sequelize';
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class AccountsService {
   constructor(@InjectModel(Account) private accountsModel: typeof Account) {}
 

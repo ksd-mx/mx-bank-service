@@ -22,7 +22,7 @@ export class Order extends Model {
     accountId: string;
     
     @Column({ allowNull: false, type: DataType.DECIMAL(10, 2) })
-    amountId: number;
+    amount: number;
 
     @BelongsTo(() => Account)
     account: Account;
