@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: transaction-service
-        image: {{ .Values.image.repository }}:latest
+        image: claudiocidade/mx-transaction-service:latest
         ports:
         - name: http
           containerPort: 9000
