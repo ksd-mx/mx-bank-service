@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-init-script
+data:
+  init.sql: |
+    CREATE DATABASE helloworld;
+    \c helloworld;
+    CREATE TABLE greetings (
+      id SERIAL PRIMARY KEY,
+      greeting VARCHAR(50) NOT NULL
+    );
+    INSERT INTO greetings (greeting) VALUES ('Hello World TEST!');

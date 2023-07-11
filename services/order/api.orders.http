@@ -1,0 +1,31 @@
+GET http://localhost:3000/orders
+x-token: lwtsgnn85
+
+###
+GET http://localhost:3000/orders/eb25583f-2d3b-4a0f-bd0d-18e2307cd68c
+x-token: lwtsgnn85
+
+###
+POST http://localhost:3000/orders
+Content-Type: application/json
+x-token: lwtsgnn85
+
+{
+    "amount": 30.00,
+    "creditCardNumber": "1234567890123456",
+    "creditCardName": "Claudio Cidade"
+}
+
+###
+PATCH http://localhost:3000/orders/75c8f761-4bfb-41b9-aedf-ce2b9349d079
+Content-Type: application/json
+x-token: ymhug7lvz1e
+
+{
+    "amount": 60.00
+}
+
+###
+DELETE http://localhost:3000/orders/85f946e5-08e1-4058-afeb-05f04d2b5096
+Content-Type: application/json
+x-token: ymhug7lvz1e
